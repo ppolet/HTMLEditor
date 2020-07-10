@@ -16,6 +16,11 @@ public class Controller {
         this.view = view;
     }
     
+    //14.2 - геттер для модели
+    public HTMLDocument getDocument(){
+        return document;
+    }
+    
     public void init(){
         
     }

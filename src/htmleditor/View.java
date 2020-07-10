@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
@@ -153,5 +154,13 @@ public class View extends JFrame implements ActionListener{
         resetUndo();  // 14.1.2. - Сбрасываем все правки
     }
     
+    //14.3 - который должен получать документ у контроллера и устанавливать его в панель редактирования htmlTextPane.
+    public void update(){
+        htmlTextPane.setDocument(controller.getDocument());
+    }
     
+    //14.4
+    public void showAbout(){
+        JOptionPane.showMessageDialog(getContentPane(),"HTML Editor", "From JavaRush", JOptionPane.INFORMATION_MESSAGE);
+    }
 }
