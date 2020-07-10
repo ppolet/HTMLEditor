@@ -8,9 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
 
 //Класс "Представления"
 public class View extends JFrame implements ActionListener{
@@ -19,6 +21,14 @@ public class View extends JFrame implements ActionListener{
     private JTextPane htmlTextPane = new JTextPane();  // компонент для визуального редактирования html. Он будет размещен на первой вкладке.
     private JEditorPane plainTextPane = new JEditorPane();  // компонент для редактирования html в виде текста, он будет отображать код html (теги и их содержимое)
     
+    // 9.2 
+    public View(){
+        try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ExceptionHandler.log(ex);
+        }
+    }
     
     public void setController(Controller controller){
         this.controller = controller;
@@ -41,9 +51,21 @@ public class View extends JFrame implements ActionListener{
         setVisible(true);
     }
     
-    //4.1 - отвечает за инициализацию меню.
+    //4.1, 9.1 - отвечает за инициализацию меню.
     public void initMenuBar(){
+        JMenuBar menuBar = new JMenuBar();
         
+        //9.1.2. - С помощью MenuHelper инициализировать меню в следующем порядке: Файл, Редактировать, Стиль, Выравнивание, Цвет, Шрифт и Помощь.
+        MenuHelper.initFileMenu(this, menuBar);
+        MenuHelper.initEditMenu(this, menuBar);
+        MenuHelper.initStyleMenu(this, menuBar);
+        MenuHelper.initAlignMenu(this, menuBar);
+        MenuHelper.initColorMenu(this, menuBar);
+        MenuHelper.initFontMenu(this, menuBar);
+        MenuHelper.initHelpMenu(this, menuBar);
+        
+        //9.1.3. - Добавлять в верхнюю часть панели контента текущего фрейма нашу панель меню, аналогично тому, как это мы делали с панелью вкладок.
+        getContentPane().add(menuBar, BorderLayout.NORTH);
     }
     
     //4.1 - отвечает за инициализацию панелей редактора.
