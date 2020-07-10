@@ -4,6 +4,9 @@ package htmleditor.actions;
 // 8.1.3. - Класс StrikeThroughAction, который отвечает за стиль текста "Зачеркнутый"
 
 import java.awt.event.ActionEvent;
+import javax.swing.JEditorPane;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 
@@ -14,7 +17,14 @@ public class StrikeThroughAction extends StyledEditorKit.StyledTextAction{
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
+        JEditorPane editor = getEditor(actionEvent);
+        if (editor != null) {
+            MutableAttributeSet mutableAttributeSet = getStyledEditorKit(editor).getInputAttributes();
+            SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
+            StyleConstants.setStrikeThrough(simpleAttributeSet, !StyleConstants.isStrikeThrough(mutableAttributeSet));
+            setCharacterAttributes(editor, simpleAttributeSet, false);
+        }
     }
     
 }

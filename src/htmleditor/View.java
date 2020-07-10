@@ -2,6 +2,7 @@ package htmleditor;
 
 import htmleditor.listeners.FrameListener;
 import htmleditor.listeners.TabbedPaneChangeListener;
+import htmleditor.listeners.UndoListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 //Класс "Представления"
 public class View extends JFrame implements ActionListener{
@@ -20,6 +23,8 @@ public class View extends JFrame implements ActionListener{
     private JTabbedPane tabbedPane = new JTabbedPane();  // панель с двумя вкладками
     private JTextPane htmlTextPane = new JTextPane();  // компонент для визуального редактирования html. Он будет размещен на первой вкладке.
     private JEditorPane plainTextPane = new JEditorPane();  // компонент для редактирования html в виде текста, он будет отображать код html (теги и их содержимое)
+    private UndoManager undoManager = new UndoManager();
+    private UndoListener undoListener = new UndoListener(undoManager);  //11.4
     
     // 9.2 
     public View(){
@@ -38,6 +43,11 @@ public class View extends JFrame implements ActionListener{
         return controller;
     }
 
+    //11.5.4
+    public UndoListener getUndoListener(){
+        return undoListener;
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         
@@ -100,5 +110,48 @@ public class View extends JFrame implements ActionListener{
     public void exit(){
         controller.exit();
     }
+    
+    public boolean canUndo(){
+        return undoManager.canUndo();
+    }
+    
+    public boolean canRedo(){
+        return undoManager.canRedo();
+    }
+    
+    //11.5.1 - отменяет последнее действие.
+    public void undo(){
+        try{
+            undoManager.undo();
+        } catch (CannotUndoException ex) {
+            ExceptionHandler.log(ex);
+        }
+    }
+    
+    //11.5.2 - возвращает ранее отмененное действие.
+    public void redo(){
+        try{
+            undoManager.redo();
+        } catch (Exception ex) {
+            ExceptionHandler.log(ex);
+        }
+    }
+    
+    //11.5.5 - который должен сбрасывать все правки в менеджере undoManager
+    public void resetUndo(){
+        undoManager.discardAllEdits();
+    }
+    
+    //13.1
+    public boolean isHtmlTabSelected(){
+        return tabbedPane.getSelectedIndex() == 0;
+    }
+    
+    //14
+    public void selectHtmlTab(){
+        tabbedPane.setSelectedIndex(0);  // 14.1.1. - Выбираем html вкладку (переключаемся на нее).
+        resetUndo();  // 14.1.2. - Сбрасываем все правки
+    }
+    
     
 }
