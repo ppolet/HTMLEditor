@@ -49,9 +49,30 @@ public class View extends JFrame implements ActionListener{
         return undoListener;
     }
     
+    //19 - будет вызваться при выборе пунктов меню, у которых наше представление указано в виде слушателя событий.
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+        String act = e.getActionCommand();
+        switch (act) {
+            case "Новый":
+                controller.createNewDocument();
+                break;
+            case "Открыть":
+                controller.openDocument();
+                break;
+            case "Сохранить":
+                controller.saveDocument();
+                break;
+            case "Сохранить как...":
+                controller.saveDocumentAs();
+                break;
+            case "Выход":
+                controller.exit();
+                break;
+            case "О программе":
+                showAbout();
+                break;
+        }
     }
     
     //4.3
@@ -101,10 +122,6 @@ public class View extends JFrame implements ActionListener{
         initMenuBar();
         initEditor();
         pack(); // унаследовали от JFrame (Подберет оптимальный размер окна с компонентами и т.д.)
-    }
-    
-    public void selectedTabChanged(){
-        
     }
     
     //2.4
@@ -163,4 +180,16 @@ public class View extends JFrame implements ActionListener{
     public void showAbout(){
         JOptionPane.showMessageDialog(getContentPane(),"HTML Editor", "From JavaRush", JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    //18 - метод вызывается, когда произошла смена выбранной вкладки.
+    public void selectedTabChanged(){
+        if (isHtmlTabSelected()){
+            controller.setPlainText(plainTextPane.getText());
+        }
+        if (tabbedPane.getSelectedIndex() == 1){
+            plainTextPane.setText(controller.getPlainText());
+        }
+        resetUndo();  //18.4
+    }
+    
 }
